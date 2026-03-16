@@ -1,0 +1,58 @@
+.lab1 {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  background-color: #ffffff;
+}
+
+.pageTitle {
+  text-align: center;
+  padding: 2rem 1rem;
+  background-color: #ffffff;
+}
+
+.pageTitle h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Основна сітка: графік зліва, контроли справа */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chartSection {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 500px;
+}
+
+
+.statsSection {
+  margin-bottom: 2rem;
+}
+
+.error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 600;
+  font-family: 'Times New Roman', Times, serif;
+}
