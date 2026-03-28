@@ -1,9 +1,5 @@
 import { useState, useCallback } from 'react';
-import type {
-  CalculationParams,
-  TrajectoryResult,
-} from '../Types/TrajectoryTypes';
-import { calculateLab1 } from '../Utils/CalculateLab1';
+import type { CalculationParams, TrajectoryResult } from '../Types/TrajectoryTypes';
 
 interface UseTrajectories {
   trajectories: TrajectoryResult[];
@@ -14,7 +10,10 @@ interface UseTrajectories {
   error: string | null;
 }
 
-export function useTrajectories(maxTrajectories = 8): UseTrajectories {
+export function useTrajectories(
+  calculateFn: (params: CalculationParams) => TrajectoryResult,
+  maxTrajectories = 8
+): UseTrajectories {
   const [trajectories, setTrajectories] = useState<TrajectoryResult[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +25,7 @@ export function useTrajectories(maxTrajectories = 8): UseTrajectories {
       }
 
       try {
-        const result = calculateLab1(params);
+        const result = calculateFn(params);
         setTrajectories((prev) => [...prev, result]);
         setError(null);
         return true;
@@ -36,19 +35,19 @@ export function useTrajectories(maxTrajectories = 8): UseTrajectories {
         return false;
       }
     },
-    [trajectories.length, maxTrajectories]
+    [trajectories.length, maxTrajectories, calculateFn]
   );
 
   const replaceAll = useCallback((params: CalculationParams) => {
     try {
-      const result = calculateLab1(params);
+      const result = calculateFn(params);
       setTrajectories([result]);
       setError(null);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Помилка розрахунку';
       setError(errorMessage);
     }
-  }, []);
+  }, [calculateFn]);
 
   const clear = useCallback(() => {
     setTrajectories([]);

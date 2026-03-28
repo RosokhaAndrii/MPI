@@ -9,6 +9,7 @@ interface ControlsProps {
   onClear: () => void;
   disabled?: boolean;
   initialParams?: Partial<SimulationParams>;
+  hideAcceleration?: boolean; 
 }
 
 const Controls: React.FC<ControlsProps> = ({
@@ -17,6 +18,7 @@ const Controls: React.FC<ControlsProps> = ({
   onClear,
   disabled = false,
   initialParams = {},
+  hideAcceleration = false,
 }) => {
   const defaultParams: SimulationParams = {
     V0: initialParams.V0 ?? 20,
@@ -28,20 +30,6 @@ const Controls: React.FC<ControlsProps> = ({
 
   const [params, setParams] = useState<SimulationParams>(defaultParams);
 
-  const handleInternalClear = () => {
-  setParams(defaultParams);
-
-  setInputs({
-    V0:"0",
-    angle: "0",
-    a: "0",
-    x0: defaultParams.x0.toString(),
-    y0: defaultParams.y0.toString(),
-  });
-
-  onClear();
-};
-
   const [inputs, setInputs] = useState<Record<keyof SimulationParams, string>>({
     V0: defaultParams.V0.toString(),
     angle: defaultParams.angle.toString(),
@@ -49,6 +37,18 @@ const Controls: React.FC<ControlsProps> = ({
     x0: defaultParams.x0.toString(),
     y0: defaultParams.y0.toString(),
   });
+
+  const handleInternalClear = () => {
+    setParams(defaultParams);
+    setInputs({
+      V0: defaultParams.V0.toString(),
+      angle: defaultParams.angle.toString(),
+      a: defaultParams.a.toString(),
+      x0: defaultParams.x0.toString(),
+      y0: defaultParams.y0.toString(),
+    });
+    onClear();
+  };
 
   const handleInputChange = (field: keyof SimulationParams) => (
     e: ChangeEvent<HTMLInputElement>
@@ -67,9 +67,7 @@ const Controls: React.FC<ControlsProps> = ({
       <div className={styles.inputGroup}>
         <label>
           Початкова швидкість (м/с):
-          <span className={styles.value}>
-            {inputs.V0 || params.V0}
-          </span>
+          <span className={styles.value}>{inputs.V0 || params.V0}</span>
         </label>
         <input
           type="number"
@@ -85,9 +83,7 @@ const Controls: React.FC<ControlsProps> = ({
       <div className={styles.inputGroup}>
         <label>
           Кут (градуси):
-          <span className={styles.value}>
-            {inputs.angle || params.angle}
-          </span>
+          <span className={styles.value}>{inputs.angle || params.angle}</span>
         </label>
         <input
           type="number"
@@ -100,30 +96,31 @@ const Controls: React.FC<ControlsProps> = ({
         />
       </div>
 
-      <div className={styles.inputGroup}>
-        <label>
-          Прискорення (м/с²):
-          <span className={styles.value}>
-            {inputs.a !== '' ? inputs.a : params.a.toFixed(1)}
-          </span>
-        </label>
-        <input
-          type="number"
-          value={inputs.a}
-          onChange={handleInputChange('a')}
-          min={0}
-          max={10}
-          step={0.1}
-          disabled={disabled}
-        />
-      </div>
+      {/* Рендеримо прискорення тільки якщо hideAcceleration === false */}
+      {!hideAcceleration && (
+        <div className={styles.inputGroup}>
+          <label>
+            Прискорення (м/с²):
+            <span className={styles.value}>
+              {inputs.a !== '' ? inputs.a : params.a.toFixed(1)}
+            </span>
+          </label>
+          <input
+            type="number"
+            value={inputs.a}
+            onChange={handleInputChange('a')}
+            min={0}
+            max={10}
+            step={0.1}
+            disabled={disabled}
+          />
+        </div>
+      )}
 
       <div className={styles.inputGroup}>
         <label>
           Початкова X₀ (м):
-          <span className={styles.value}>
-            {inputs.x0 || params.x0}
-          </span>
+          <span className={styles.value}>{inputs.x0 || params.x0}</span>
         </label>
         <input
           type="number"
@@ -139,9 +136,7 @@ const Controls: React.FC<ControlsProps> = ({
       <div className={styles.inputGroup}>
         <label>
           Початкова Y₀ (м):
-          <span className={styles.value}>
-            {inputs.y0 || params.y0}
-          </span>
+          <span className={styles.value}>{inputs.y0 || params.y0}</span>
         </label>
         <input
           type="number"
@@ -155,18 +150,10 @@ const Controls: React.FC<ControlsProps> = ({
       </div>
 
       <div className={styles.buttons}>
-        <button
-          onClick={() => onSimulate(params)}
-          disabled={disabled}
-          className={styles.btnPrimary}
-        >
+        <button onClick={() => onSimulate(params)} disabled={disabled} className={styles.btnPrimary}>
           Побудувати графік
         </button>
-        <button
-          onClick={() => onAdd(params)}
-          disabled={disabled}
-          className={styles.btnSecondary}
-        >
+        <button onClick={() => onAdd(params)} disabled={disabled} className={styles.btnSecondary}>
           Додати траєкторію
         </button>
         <button onClick={handleInternalClear} disabled={disabled} className={styles.btnDanger}>

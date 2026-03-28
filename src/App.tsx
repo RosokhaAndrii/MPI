@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router';
 import Lab1 from './Pages/Lab1/Lab1';
+import Lab2 from './Pages/Lab2/Lab2';
 import './App.css';
 
 const App: React.FC = () => {
@@ -20,7 +21,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Lab1 />} />
             <Route path="/lab1" element={<Lab1 />} />
-            {/* <Route path="/lab2" element={<Lab2 />} /> */}
+            <Route path="/lab2" element={<Lab2 />} />
             {/* <Route path="/lab3" element={<Lab3 />} /> */}
           </Routes>
         </main>

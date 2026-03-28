@@ -1,17 +1,16 @@
-import React from 'react';
-import { useTrajectories } from '../../Hooks/useTrajectories';
-import Chart from '../../Components/Chart/Chart';
-import Controls from '../../Components/Controls/Controls';
-import Stats from '../../Components/Stats/Stats';
-import TrajectoryList from '../../Components/TrajectoryList/TrajectoryList';
-import type { SimulationParams } from '../../Types/TrajectoryTypes';
-import { calculateLab1 } from '../../Utils/CalculateLab1';
-import styles from './Lab1.module.css';
+import React from "react";
+import { useTrajectories } from "../../Hooks/useTrajectories";
+import { calculateLab2 } from "../../Utils/CalculateLab2";
+import Chart from "../../Components/Chart/Chart";
+import Controls from "../../Components/Controls/Controls";
+import Stats from "../../Components/Stats/Stats";
+import TrajectoryList from "../../Components/TrajectoryList/TrajectoryList";
+import type { SimulationParams } from "../../Types/TrajectoryTypes";
+import styles from "../Lab1/Lab1.module.css";
 
-
-const Lab1: React.FC = () => {
+const Lab2: React.FC = () => {
   const { trajectories, addTrajectory, replaceAll, clear, count, error } =
-    useTrajectories(calculateLab1, 8);
+    useTrajectories(calculateLab2, 8);
 
   const handleSimulate = (params: SimulationParams) => {
     replaceAll(params);
@@ -32,15 +31,14 @@ const Lab1: React.FC = () => {
 
   return (
     <div className={styles.lab1}>
-      <div className={styles.pageTitle}>
-      </div>
+      <div className={styles.pageTitle}></div>
 
       <div className={styles.container}>
         <div className={styles.mainGrid}>
           <div className={styles.chartSection}>
             <Chart
               trajectories={trajectories}
-              title=""
+              title="Рух тіла, кинутого під кутом до горизонту"
             />
           </div>
 
@@ -49,6 +47,8 @@ const Lab1: React.FC = () => {
               onSimulate={handleSimulate}
               onAdd={handleAdd}
               onClear={handleClear}
+              hideAcceleration={true}
+              initialParams={{ V0: 20, angle: 45, x0: 0, y0: 0 }}
             />
           </div>
         </div>
@@ -65,4 +65,4 @@ const Lab1: React.FC = () => {
   );
 };
 
-export default Lab1;
+export default Lab2;
