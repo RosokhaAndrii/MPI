@@ -26,12 +26,13 @@ export function calculateLab2(params: CalculationParams): TrajectoryResult {
   const D = v0y * v0y + 2 * g * y0;
 
   if (D < 0) {
-    throw new Error("Недостатня швидкість: тіло не зможе вилетіти з ями (y₀ < 0)!");
+    throw new Error("Недостатня швидкість: координата y не має бути від'ємною (y₀ < 0)!");
   }
 
   const flightTime = (v0y + Math.sqrt(D)) / g;
 
   if (flightTime <= 0) {
+     alert("Тіло вже знаходиться на землі або кинуто вниз, політ неможливий")
     throw new Error("Тіло вже знаходиться на землі або кинуто вниз, політ неможливий.");
   }
   const maxHeight = y0 + (v0y * v0y) / (2 * g);
@@ -42,7 +43,6 @@ export function calculateLab2(params: CalculationParams): TrajectoryResult {
   const TARGET_POINTS_COUNT = 150;
   const dynamicDt = flightTime / TARGET_POINTS_COUNT;
   const dt = params.dt ? Math.max(params.dt, 0.01) : dynamicDt; 
-
   let maxSpeed = V0;
 
   for (let t = 0; t <= flightTime; t += dt) {
