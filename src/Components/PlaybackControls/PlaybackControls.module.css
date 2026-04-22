@@ -1,0 +1,35 @@
+.controlsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 16px;
+}
+
+.mainControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.speedSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 250px;
+  color: #666;
+}
+
+.statusText {
+  min-height: 24px;
+  font-weight: 500;
+  color: #1976d2; 
+  text-align: center;
+}
+
+.stepCounter {
+  font-size: 0.85rem;
+  color: #9e9e9e;
+  font-family: monospace;
+}

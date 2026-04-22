@@ -1,0 +1,40 @@
+.labContainer {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+.header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visualizationPaper {
+  padding: 20px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.controlsWrapper {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: center;
+}
