@@ -100,3 +100,15 @@ export type ConfigAction =
   | { type: "ADD_ITEM"; payload: Omit<Item, "id"> }
   | { type: "REMOVE_ITEM"; payload: string | number }
   | { type: "CLEAR_ITEMS" };
+
+export interface RecursionState {
+  bestValue: number;
+  bestCombination: Item[];
+}
+
+export interface Node {
+  level: number;
+  profit: number;
+  weight: number;
+  itemsSelected: Item[];
+}
