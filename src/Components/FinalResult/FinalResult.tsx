@@ -1,6 +1,5 @@
 import React from 'react';
-import { Typography, Paper, Box, Divider, Chip, Stack } from '@mui/material';
-import { CheckCircleOutlineSharp } from '@mui/icons-material';
+import { Typography, Paper, Box, Divider, Chip } from '@mui/material';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import type { AlgorithmResult, Item } from '../../Types/lab3Types';
 import styles from './FinalResult.module.css';
@@ -19,9 +18,8 @@ const FinalResult: React.FC<FinalResultProps> = ({ result, allItems, capacity })
   return (
     <Paper elevation={0} className={styles.resultCard} sx={{ borderRadius: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <CheckCircleOutlineSharp color="success" fontSize="large" />
         <Typography variant="h5" color="success.main" sx={{ fontWeight: 'bold' }}>
-          Результат розв'язання
+          Результат розв'язку
         </Typography>
       </Box>
 
