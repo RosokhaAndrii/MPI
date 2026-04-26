@@ -1,59 +1,58 @@
-import React, { useState, useReducer } from 'react';
-import { 
-  Typography, 
-  Paper, 
-  Box, 
-  Tabs, 
-  Tab, 
-  Divider,
-  Alert
-} from '@mui/material';
-import type { AlgorithmType } from '../../Types/lab3Types';
-import InputPanel from '../../Components/InputPanel/InputPanel'; 
-import PlaybackControls from '../../Components/PlaybackControls/PlaybackControls'; 
-import VisualizerContainer from '../../Components/VisualizerContainer/VisualizerContainer';
-import { configReducer, initialConfigState } from '../../store/configReducer'; 
-import { useAlgorithmExecution } from '../../Hooks/useAlgorithmExecution'; 
-import styles from './Lab3.module.css';
+import React, { useState, useReducer } from "react";
+import { Paper, Box, Tabs, Tab, Divider, Alert } from "@mui/material";
+import type { AlgorithmType } from "../../Types/lab3Types";
+import InputPanel from "../../Components/InputPanel/InputPanel";
+import PlaybackControls from "../../Components/PlaybackControls/PlaybackControls";
+import VisualizerContainer from "../../Components/VisualizerContainer/VisualizerContainer";
+import { configReducer, initialConfigState } from "../../store/configReducer";
+import { useAlgorithmExecution } from "../../Hooks/useAlgorithmExecution";
+import styles from "./Lab3.module.css";
 
 const Lab3: React.FC = () => {
-  const [tabValue, setTabValue] = useState<AlgorithmType>('DP');
-  const [configState, configDispatch] = useReducer(configReducer, initialConfigState);
+  const [tabValue, setTabValue] = useState<AlgorithmType>("DP");
+  const [configState, configDispatch] = useReducer(
+    configReducer,
+    initialConfigState,
+  );
 
   const execution = useAlgorithmExecution({
     algorithm: tabValue,
     items: configState.items,
-    capacity: configState.capacity
+    capacity: configState.capacity,
   });
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: AlgorithmType) => {
+  const handleTabChange = (
+    _: React.SyntheticEvent,
+    newValue: AlgorithmType,
+  ) => {
     setTabValue(newValue);
   };
 
   return (
     <div className={styles.labContainer}>
-
       <main className={styles.mainGrid}>
         <aside className={styles.sidebar}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-            <InputPanel 
-              state={configState} 
-              dispatch={configDispatch} 
-            />
+            <InputPanel state={configState} dispatch={configDispatch} />
           </Paper>
-          
+
           <Alert severity="info" variant="outlined" sx={{ mt: 2 }}>
-            <strong>Варіант 4:</strong> Оптимальна цінність для W=9 має бути 12 (предмети 2, 3, 5).
+            <strong>Варіант 4:</strong> Оптимальна цінність для W=9 має бути 12
+            (предмети 2, 3, 5).
           </Alert>
         </aside>
-        
-        <Box sx={{ width: '100%' }}>
-          <Paper elevation={3} className={styles.visualizationPaper} sx={{ borderRadius: 2 }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-              <Tabs 
-                value={tabValue} 
-                onChange={handleTabChange} 
-                variant="scrollable" 
+
+        <Box sx={{ width: "100%" }}>
+          <Paper
+            elevation={3}
+            className={styles.visualizationPaper}
+            sx={{ borderRadius: 2 }}
+          >
+            <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                variant="scrollable"
                 scrollButtons="auto"
               >
                 <Tab label="Динамічне програмування" value="DP" />
@@ -64,21 +63,22 @@ const Lab3: React.FC = () => {
               </Tabs>
             </Box>
 
-            <Box sx={{ flexGrow: 1, position: 'relative', minHeight: '400px' }}>
-              <VisualizerContainer 
+            <Box sx={{ flexGrow: 1, position: "relative", minHeight: "400px" }}>
+              <VisualizerContainer
                 algorithm={tabValue}
                 items={configState.items}
                 capacity={configState.capacity}
                 currentSnapshot={execution.currentSnapshot}
                 status={execution.status}
                 finalResult={execution.finalResult}
+                history={execution.steps.slice(0, execution.currentStep + 1)}
               />
             </Box>
 
             <Divider sx={{ my: 2 }} />
 
             <div className={styles.controlsWrapper}>
-              <PlaybackControls 
+              <PlaybackControls
                 status={execution.status}
                 currentStep={execution.currentStep}
                 totalSteps={execution.totalSteps}
@@ -89,6 +89,7 @@ const Lab3: React.FC = () => {
                 onPause={execution.handlePause}
                 onStepForward={execution.handleStepForward}
                 onStepBackward={execution.handleStepBackward}
+                onSkipToEnd={execution.handleSkipToEnd}
                 onReset={execution.handleReset}
               />
             </div>

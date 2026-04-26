@@ -31,6 +31,9 @@ export interface ListStepSnapshot {
   currentTotalValue: number;
   bestValueSoFar: number;
   description: string;
+  nodeId?: string;
+  parentId?: string | null;
+  label?: string; 
 }
 
 export interface DPStepSnapshot {
@@ -111,4 +114,12 @@ export interface Node {
   profit: number;
   weight: number;
   itemsSelected: Item[];
+}
+
+export interface StackNode {
+  level: number;
+  profit: number;
+  weight: number;
+  itemsSelected: Item[];
+  id: string; 
 }

@@ -9,6 +9,7 @@ import type {
 import DPTable from "../DPTable/DPTable";
 import BruteForceVisualizer from "../BruteForceVizualizer/BruteForceVizualizer";
 import GreedyVisualizer from "../GreedyVisualizer/GreedyVisualizer";
+import RecursiveVisualizer from "../RecursiveVisualizer/RecursiveVisualizer";
 import styles from "./VisualizerContainer.module.css";
 
 interface VisualizerContainerProps {
@@ -16,6 +17,7 @@ interface VisualizerContainerProps {
   items: Item[];
   capacity: number;
   currentSnapshot: any;
+  history: any[];
   status: "IDLE" | "RUNNING" | "PAUSED" | "COMPLETED" | "ERROR";
   finalResult: AlgorithmResult | null;
 }
@@ -25,6 +27,7 @@ const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
   items,
   capacity,
   currentSnapshot,
+  history,
   status,
   finalResult,
 }) => {
@@ -36,11 +39,11 @@ const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
             <Typography variant="h6" gutterBottom align="center">
               Таблиця динамічного програмування
             </Typography>
-            {currentSnapshot?.type === 'DP_TABLE' ? (
-              <DPTable 
-                snapshot={currentSnapshot} 
-                items={items} 
-                capacity={capacity} 
+            {currentSnapshot?.type === "DP_TABLE" ? (
+              <DPTable
+                snapshot={currentSnapshot}
+                items={items}
+                capacity={capacity}
               />
             ) : (
               <Typography variant="body2" color="text.secondary" align="center">
@@ -50,17 +53,17 @@ const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
           </Box>
         );
 
-     case "GREEDY": 
+      case "GREEDY":
         return (
           <Box sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom align="center">
               Візуалізація Жадібного алгоритму
             </Typography>
             {currentSnapshot?.type === "LIST_VIEW" ? (
-              <GreedyVisualizer 
-                snapshot={currentSnapshot} 
-                capacity={capacity} 
-                allItems={items} 
+              <GreedyVisualizer
+                snapshot={currentSnapshot}
+                capacity={capacity}
+                allItems={items}
               />
             ) : (
               <Typography variant="body2" color="text.secondary" align="center">
@@ -70,17 +73,17 @@ const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
           </Box>
         );
 
-      case "BRUTE_FORCE": 
+      case "BRUTE_FORCE":
         return (
-         <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom align="center">
               Візуалізація Повного перебору
             </Typography>
             {currentSnapshot?.type === "LIST_VIEW" ? (
-              <BruteForceVisualizer 
-                snapshot={currentSnapshot} 
-                capacity={capacity} 
-                allItems={items} 
+              <BruteForceVisualizer
+                snapshot={currentSnapshot}
+                capacity={capacity}
+                allItems={items}
               />
             ) : (
               <Typography variant="body2" color="text.secondary" align="center">
@@ -93,17 +96,45 @@ const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
       case "RECURSION":
       case "BRANCH_AND_BOUND":
         return (
-          <Box sx={{ textAlign: "center", p: 4, border: '2px dashed #ccc', borderRadius: 2 }}>
-            <Typography variant="h6" color="primary" gutterBottom>
-              Meow
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              height: "100%",
+              p: 2,
+            }}
+          >
+            <Typography
+              variant="h6"
+              gutterBottom
+              align="center"
+              color="primary"
+            >
+              Дерево рішень (
+              {algorithm === "RECURSION" ? "Рекурсія" : "Гілки та межі"})
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Meow meow <br/>
-            </Typography>
-            {currentSnapshot?.type === "LIST_VIEW" && (
-              <Typography variant="caption" sx={{ display: 'block', mt: 2, fontFamily: 'monospace' }}>
-                Поточний крок: {currentSnapshot.description}
-              </Typography>
+
+            {currentSnapshot?.type === "LIST_VIEW" ? (
+              <RecursiveVisualizer snapshot={currentSnapshot} history={history} />
+            ) : (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "400px",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  align="center"
+                >
+                  Натисніть Play, щоб почати будувати дерево рішень...
+                </Typography>
+              </Box>
             )}
           </Box>
         );

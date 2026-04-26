@@ -1,29 +1,26 @@
-import React from 'react';
-import { 
-  IconButton, 
-  Slider, 
-  Typography, 
-  Tooltip,  
-} from '@mui/material';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import ReplayIcon from '@mui/icons-material/Replay';
-import SpeedIcon from '@mui/icons-material/Speed';
-import styles from './PlaybackControls.module.css';
+import React from "react";
+import { IconButton, Slider, Typography, Tooltip } from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import ReplayIcon from "@mui/icons-material/Replay";
+import SpeedIcon from "@mui/icons-material/Speed";
+import FastForwardIcon from "@mui/icons-material/FastForward";
+import styles from "./PlaybackControls.module.css";
 
 interface PlaybackControlsProps {
-  status: 'IDLE' | 'RUNNING' | 'PAUSED' | 'COMPLETED' | 'ERROR';
+  status: "IDLE" | "RUNNING" | "PAUSED" | "COMPLETED" | "ERROR";
   currentStep: number;
   totalSteps: number;
   description: string;
-  speed: number; 
+  speed: number;
   onSpeedChange: (newSpeed: number) => void;
   onPlay: () => void;
   onPause: () => void;
   onStepForward: () => void;
   onStepBackward: () => void;
+  onSkipToEnd: () => void;
   onReset: () => void;
 }
 
@@ -38,28 +35,33 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
   onPause,
   onStepForward,
   onStepBackward,
-  onReset
+  onSkipToEnd,
+  onReset,
 }) => {
-  const isRunning = status === 'RUNNING';
-  const isIdle = status === 'IDLE';
-  const isCompleted = status === 'COMPLETED';
+  const isRunning = status === "RUNNING";
+  const isIdle = status === "IDLE";
+  const isCompleted = status === "COMPLETED";
 
   const canGoBack = currentStep > 0 && !isRunning;
-  const canGoForward = (status === 'PAUSED' || isCompleted) && currentStep < totalSteps && !isRunning;
-  const canPlay = status === 'IDLE' || status === 'PAUSED';
+  const canGoForward =
+    (status === "PAUSED" || isCompleted) &&
+    currentStep < totalSteps &&
+    !isRunning;
+  const canPlay = status === "IDLE" || status === "PAUSED";
+  const canSkipToEnd = status !== "COMPLETED" && status !== "ERROR";
 
   return (
     <div className={styles.controlsContainer}>
       <Typography className={styles.statusText} variant="body1">
-        {description || 'Готовий до запуску'}
+        {description || "Готовий до запуску"}
       </Typography>
 
       <div className={styles.mainControls}>
         <Tooltip title="Скинути">
           <span>
-            <IconButton 
-              color="default" 
-              onClick={onReset} 
+            <IconButton
+              color="default"
+              onClick={onReset}
               disabled={isIdle && currentStep === 0}
             >
               <ReplayIcon />
@@ -69,15 +71,16 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
         <Tooltip title="Попередній крок">
           <span>
-            <IconButton 
-              color="primary" 
-              onClick={onStepBackward} 
+            <IconButton
+              color="primary"
+              onClick={onStepBackward}
               disabled={!canGoBack}
             >
               <SkipPreviousIcon />
             </IconButton>
           </span>
         </Tooltip>
+
         {isRunning ? (
           <Tooltip title="Пауза">
             <IconButton color="secondary" size="large" onClick={onPause}>
@@ -87,9 +90,9 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
         ) : (
           <Tooltip title={isCompleted ? "Завершено" : "Запустити"}>
             <span>
-              <IconButton 
-                color="success" 
-                size="large" 
+              <IconButton
+                color="success"
+                size="large"
                 onClick={onPlay}
                 disabled={!canPlay && !isIdle}
               >
@@ -101,12 +104,23 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
         <Tooltip title="Наступний крок">
           <span>
-            <IconButton 
-              color="primary" 
-              onClick={onStepForward} 
+            <IconButton
+              color="primary"
+              onClick={onStepForward}
               disabled={!canGoForward && !isIdle}
             >
               <SkipNextIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+        <Tooltip title="Показати результат">
+          <span>
+            <IconButton
+              color="secondary"
+              onClick={onSkipToEnd}
+              disabled={!canSkipToEnd}
+            >
+              <FastForwardIcon />
             </IconButton>
           </span>
         </Tooltip>

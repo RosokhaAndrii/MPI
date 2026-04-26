@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, Paper, Box, Divider, Chip } from '@mui/material';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import type { AlgorithmResult, Item } from '../../Types/lab3Types';
 import styles from './FinalResult.module.css';
 
@@ -42,7 +41,6 @@ const FinalResult: React.FC<FinalResultProps> = ({ result, allItems, capacity })
 
       <Box sx={{ mt: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <ShoppingBagIcon color="action" />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
             Вміст рюкзака:
           </Typography>
