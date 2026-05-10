@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo } from "react";
 import Plot from "react-plotly.js";
 import type { Point } from "../../Types/lab4types";
@@ -10,6 +11,7 @@ interface PlotVisualizerProps {
   viewMode: "INTERPOLATION" | "LSA" | "ALL";
   activePointIndex?: number;
   maxResidual?: number;
+  onChartClick?: (x: number, y: number) => void;
 }
 
 const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
@@ -20,11 +22,12 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
   viewMode,
   activePointIndex,
   maxResidual,
+  onChartClick,
 }) => {
   const curveX = useMemo(() => {
     if (points.length === 0) return [];
-    const minX = Math.min(...points.map(p => p.x)) - 0.5;
-    const maxX = Math.max(...points.map(p => p.x)) + 0.5;
+    const minX = Math.min(...points.map((p) => p.x)) - 0.5;
+    const maxX = Math.max(...points.map((p) => p.x)) + 0.5;
     const res = [];
     for (let x = minX; x <= maxX; x += 0.05) res.push(x);
     return res;
@@ -32,6 +35,26 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
 
   const traces = useMemo(() => {
     const data: any[] = [];
+    
+    if (onChartClick) {
+      const gridX = [];
+      const gridY = [];
+      for (let x = -6; x <= 6; x += 0.25) {
+        for (let y = -5; y <= 30; y += 0.5) {
+          gridX.push(x);
+          gridY.push(y);
+        }
+      }
+      data.push({
+        x: gridX,
+        y: gridY,
+        mode: "markers",
+        type: "scatter",
+        hoverinfo: "none",
+        showlegend: false,
+        marker: { opacity: 0, size: 8 }, 
+      });
+    }
     data.push({
       x: points.map((p) => p.x),
       y: points.map((p) => p.y),
@@ -51,7 +74,6 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
         line: { width: 1, color: "white" },
       },
     });
-
     if ((viewMode === "INTERPOLATION" || viewMode === "ALL") && interpolationFunc) {
       data.push({
         x: curveX,
@@ -62,7 +84,6 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
         hovertemplate: "<b>X:</b> %{x:.2f}<br><b>Y:</b> %{y:.3f}<extra>Інтерполяція</extra>",
       });
     }
-
     if ((viewMode === "LSA" || viewMode === "ALL") && lsaFunc) {
       data.push({
         x: curveX,
@@ -72,9 +93,8 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
         line: { color: "rgb(50, 171, 96)", width: 3 },
         hovertemplate: "<b>X:</b> %{x:.2f}<br><b>Y:</b> %{y:.3f}<extra>МНК</extra>",
       });
-      const cleanResiduals = residuals.map((r) =>
-        Math.abs(r) < 1e-10 ? 0 : r
-      );
+
+      const cleanResiduals = residuals.map((r) => (Math.abs(r) < 1e-10 ? 0 : r));
 
       data.push({
         x: points.map((p) => p.x),
@@ -96,26 +116,41 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
     }
 
     return data;
-  }, [
-    points,
-    interpolationFunc,
-    lsaFunc,
-    residuals,
-    viewMode,
-    curveX,
-    activePointIndex,
-  ]);
+  }, [points, interpolationFunc, lsaFunc, residuals, viewMode, curveX, activePointIndex, onChartClick]);
 
   return (
     <Plot
       data={traces}
+      onClick={(e) => {
+        if (onChartClick && e.points && e.points.length > 0) {
+          const rawX = Number(e.points[0].x);
+          const rawY = Number(e.points[0].y);
+          
+          if (!isNaN(rawX) && !isNaN(rawY)) {
+            const clickedX = Number(rawX.toFixed(2));
+            const clickedY = Number(rawY.toFixed(2));
+            onChartClick(clickedX, clickedY);
+          }
+        }
+      }}
       layout={{
         autosize: true,
         height: 650,
         margin: { t: 40, b: 60, l: 85, r: 40 },
-        hovermode: "closest",
-        xaxis: { title: { text: "X" }, zeroline: true, gridcolor: "#f0f0f0" },
-        yaxis: { title: { text: "Y" }, domain: [0.38, 1], gridcolor: "#f0f0f0" },
+        hovermode: "closest", 
+        clickmode: "event", 
+        xaxis: { 
+          title: { text: "X" }, 
+          zeroline: true, 
+          gridcolor: "#f0f0f0",
+          range: points.length === 0 ? [-5, 5] : undefined,
+        },
+        yaxis: { 
+          title: { text: "Y" }, 
+          domain: [0.38, 1], 
+          gridcolor: "#f0f0f0",
+          range: points.length === 0 ? [-5, 25] : undefined,
+        },
         yaxis2: {
           title: { text: "r_i (Залишки)", standoff: 15 },
           domain: [0, 0.25],
@@ -130,7 +165,7 @@ const PlotVisualizer: React.FC<PlotVisualizerProps> = ({
         plot_bgcolor: "white",
       }}
       config={{ responsive: true, displaylogo: false }}
-      style={{ width: "100%" }}
+      style={{ width: "100%", cursor: onChartClick ? "crosshair" : "default" }}
     />
   );
 };
